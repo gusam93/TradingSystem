@@ -5,9 +5,8 @@
 
 using std::string;
 
-
-
 class StockBrockerDriver {
+public:
 	virtual void login(string id, string password) = 0;
 	virtual void sell(string stockCode, int price, int count) = 0;
 	virtual void buy(string stockCode, int price, int count) = 0;
@@ -61,7 +60,32 @@ public:
 		return brocker;
 	}
 
+	bool buyNiceTiming(string stockCode, int maxPrice) {
+		int previousPrice = 0;
+		int currentStockPrice = 0;
+
+		for (int getPriceCount = 0 ; getPriceCount < GET_PRICE_COUNT; getPriceCount++) {
+			currentStockPrice = brocker->getPrice(stockCode, GET_PRICE_DELAY);
+			if (previousPrice >= currentStockPrice) {
+				return false;
+			}
+			previousPrice = currentStockPrice;
+		}
+
+		int buyStockCount = maxPrice / currentStockPrice;
+		if (buyStockCount > 0) {
+			brocker->buy(stockCode, currentStockPrice, buyStockCount);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
 private:
+	const int GET_PRICE_COUNT = 3;
+	const int GET_PRICE_DELAY = 200;
 	StockBrockerDriver* brocker;
 	
 };
