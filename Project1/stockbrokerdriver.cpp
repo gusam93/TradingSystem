@@ -25,6 +25,7 @@ public:
 		kiwerapi->buy(stockCode, count, price);
     }
 	int getPrice(string stockCode, int msDelay) {
+		Sleep(msDelay);
 		return kiwerapi->currentPrice(stockCode);
 	}
 private:
