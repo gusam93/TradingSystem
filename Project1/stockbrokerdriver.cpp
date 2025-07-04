@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <stdexcept>
 #include "kiwer.cpp"
 #include "nemo.cpp"
 
@@ -78,6 +79,7 @@ public:
 
 private:
 	int checkPriceFalling(string stockCode) {
+		if (broker == nullptr) throw std::exception();
 		int price = broker->getPrice(stockCode, GET_PRICE_DELAY);
 		for (int getPriceCount = 0; getPriceCount < GET_PRICE_COUNT - 1; getPriceCount++) {
 			int newPrice = broker->getPrice(stockCode, GET_PRICE_DELAY);
@@ -89,6 +91,7 @@ private:
 	}
 
 	int checkPriceIncreasing(string stockCode) {
+		if (broker == nullptr) throw std::exception();
 		int price = broker->getPrice(stockCode, GET_PRICE_DELAY);
 		for (int getPriceCount = 0; getPriceCount < GET_PRICE_COUNT - 1; getPriceCount++) {
 			int newPrice = broker->getPrice(stockCode, GET_PRICE_DELAY);
