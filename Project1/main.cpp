@@ -135,7 +135,7 @@ TEST_F(TradingSystemFixture, SellNiceTimingWithFail)
         .WillOnce(Return(CURRENT_PRICE))
         .WillRepeatedly(Return(CURRENT_PRICE+RISING));
 
-     int count = 100;
+    int count = 100;
 
     bool isSuccess = tradingSystem.sellNiceTiming(STOCK_ID, count);
     EXPECT_FALSE(isSuccess);
@@ -156,7 +156,7 @@ TEST_F(TradingSystemFixture, SellNiceTimingWithSuccess)
     bool isSuccess = tradingSystem.sellNiceTiming(STOCK_ID, count);
     EXPECT_TRUE(isSuccess);
 }
-/*
+
 TEST_F(TradingSystemFixture, BuyNiceTimingExceptionWithoutSelectBroker)
 {
     EXPECT_CALL(mockDriver, getPrice(STOCK_ID, _))
@@ -181,7 +181,7 @@ TEST_F(TradingSystemFixture, SellNiceTimingExceptionWithoutSelectBroker)
     int count = 100;
     EXPECT_THROW(tradingSystem.sellNiceTiming(STOCK_ID, count), std::exception);
 }
-*/
+
 int main() {
     ::testing::InitGoogleMock();
     return RUN_ALL_TESTS();
