@@ -97,7 +97,7 @@ private:
 	}
 
 
-	int isNiceTimingToSell(string stockCode) {
+	bool isNiceTimingToSell(string stockCode) {
 		int price = broker->getPrice(stockCode, 0);
 		for (int getPriceCount = 0; getPriceCount < GET_PRICE_COUNT - 1; getPriceCount++) {
 			int newPrice = broker->getPrice(stockCode, GET_PRICE_DELAY);
@@ -105,7 +105,7 @@ private:
 			price = newPrice;
 		}
 		currentPrice = price;
-		return price;
+		return true;
 	}
 
 	bool isNiceTimingToBuy(string stockCode) {
