@@ -9,6 +9,7 @@ using std::string;
 class MockDriver : public StockBrockerDriver {
 public:
     MOCK_METHOD(void, login, (string id, string password), (override));
+    MOCK_METHOD(void, buy, (string stockCode, int count, int price), ());
 };
 
 TEST(TradingSystem, Login)
@@ -25,13 +26,13 @@ TEST(TradingSystem, Login)
 TEST(TradingSystem, Buy)
 {
     NiceMock<MockDriver> mockDriver;
-    EXPECT_CALL(mockDriver, buy("AAA", 10,100))
+    EXPECT_CALL(mockDriver, buy("AAA", 10, 100))
         .Times(1);
 
     string stockCode = "AAA";
     int count = 10;
     int price = 100;
-    mockDriver.buy(stockCode, price, count);
+    mockDriver.buy(stockCode, count, price);
 }
 
 TEST(TradingSystem, Sell)
