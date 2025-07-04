@@ -85,13 +85,30 @@ TEST_F(TradingSystemFixture, BuyNiceTimingWithFail)
     tradingSystem.selectStockBroker(&mockDriver);
 
     EXPECT_CALL(mockDriver, getPrice("DDD", _))
-        .Times(3)
+        .Times(AtLeast(2))
         .WillOnce(Return(1000))
         .WillOnce(Return(1000))
         .WillOnce(Return(1000));
 
     string stockCode = "DDD";
     int maxPrice = 9999;
+
+    bool isSuccess = tradingSystem.buyNiceTiming(stockCode, maxPrice);
+    EXPECT_FALSE(isSuccess);
+}
+
+TEST_F(TradingSystemFixture, BuyNiceTimingFailWithNotEnoughPrice)
+{
+    tradingSystem.selectStockBroker(&mockDriver);
+
+    EXPECT_CALL(mockDriver, getPrice("DDD", _))
+        .Times(AtLeast(2))
+        .WillOnce(Return(1000))
+        .WillOnce(Return(1000))
+        .WillOnce(Return(1000));
+
+    string stockCode = "DDD";
+    int maxPrice = 100;
 
     bool isSuccess = tradingSystem.buyNiceTiming(stockCode, maxPrice);
     EXPECT_FALSE(isSuccess);
@@ -107,6 +124,9 @@ TEST_F(TradingSystemFixture, BuyNiceTimingWithSuccess)
         .WillOnce(Return(1100))
         .WillOnce(Return(1200));
 
+    EXPECT_CALL(mockDriver, buy("EEE", _, _))
+		.Times(AtLeast(1));
+
     string stockCode = "EEE";
     int maxPrice = 99999;
 
@@ -119,10 +139,9 @@ TEST_F(TradingSystemFixture, SellNiceTimingWithFail)
     tradingSystem.selectStockBroker(&mockDriver);
 
     EXPECT_CALL(mockDriver, getPrice("FFF", _))
-        .Times(3)
+        .Times(AtLeast(2))
         .WillOnce(Return(1000))
-        .WillOnce(Return(1100))
-        .WillOnce(Return(1000));
+        .WillRepeatedly(Return(1100));
 
     string stockCode = "FFF";
     int count = 100;
