@@ -53,6 +53,16 @@ TEST(TradingSystem, CheckCurrentPrice)
     EXPECT_EQ(999, price);
 }
 
+TEST(TradingSystem, SelectStockBroker)
+{
+    NiceMock<MockDriver> mockDriver;
+    AutoTradingSystem tradingSystem;
+    tradingSystem.selectStockBroker(&mockDriver);
+
+    auto selectedStcokBroker = tradingSystem.getStockBroker();
+    EXPECT_EQ(mockDriver, selectedStcokBroker);
+}
+
 int main() {
     ::testing::InitGoogleMock();
     return RUN_ALL_TESTS();
