@@ -10,6 +10,7 @@ class MockDriver : public StockBrockerDriver {
 public:
     MOCK_METHOD(void, login, (string id, string password), (override));
 };
+
 /*
 TEST(TradingSystem, Login)
 {
@@ -63,10 +64,13 @@ TEST(TradingSystem, SelectStockBroker)
 {
     NiceMock<MockDriver> mockDriver;
     AutoTradingSystem tradingSystem;
+    
     tradingSystem.selectStockBroker(&mockDriver);
 
     auto selectedStcokBroker = tradingSystem.getStockBroker();
-    EXPECT_EQ(mockDriver, selectedStcokBroker);
+
+    EXPECT_EQ(mockDriver, selectedStcokBroker);   
+
 }
 
 int main() {
