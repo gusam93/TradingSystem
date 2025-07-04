@@ -16,6 +16,30 @@ TEST(TradingSystem, Login)
     mockDriver.login(id, password);
 }
 
+TEST(TradingSystem, Buy)
+{
+    NiceMock<MockDriver> mockDriver;
+    EXPECT_CALL(mockDriver, buy("AAA", 10,100))
+        .Times(1);
+
+    string stockCode = "AAA";
+    int count = 10;
+    int price = 100;
+    mockDriver.buy(stockCode, price, count);
+}
+
+TEST(TradingSystem, Sell)
+{
+    NiceMock<MockDriver> mockDriver;
+    EXPECT_CALL(mockDriver, buy("BBB", 100, 1000))
+        .Times(1);
+
+    string stockCode = "BBB";
+    int count = 100;
+    int price = 1000;
+    mockDriver.sell(stockCode, price, count);
+}
+
 int main() {
     ::testing::InitGoogleMock();
     return RUN_ALL_TESTS();
