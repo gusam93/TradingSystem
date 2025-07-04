@@ -5,8 +5,19 @@
 
 using std::string;
 
-class StockBrockerDriver {
+class AutoTradingSystem {
 public:
+	void selectBrocker(StockBrockerDriver *driver) {
+		brocker = driver;
+	}
+	StockBrockerDriver* getStockBroker() {
+		return brocker;
+	}
+private:
+	StockBrockerDriver * brocker;
+};
+
+class StockBrockerDriver {
 	virtual void login(string id, string password) = 0;
 };
 
