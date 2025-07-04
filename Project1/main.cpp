@@ -19,6 +19,12 @@ public:
     NiceMock<MockDriver> mockDriver;
     AutoTradingSystem tradingSystem;
 
+    const string STOCK_ID = "SEC_CRA";
+    const int STOCK_PRICE = 100;
+    const int STOCK_COUNT = 1000;
+    const int STOCK_MAX_PRICE = 9999;
+    const int DELAY1000 = 1000;
+
 protected:
     void SetUp() override {
         //tradingSystem.selectStockBroker(&mockDriver);
@@ -38,34 +44,27 @@ TEST_F(TradingSystemFixture, Login)
 
 TEST_F(TradingSystemFixture, Buy)
 {
-    EXPECT_CALL(mockDriver, buy("AAA", 10, 100))
+    EXPECT_CALL(mockDriver, buy(STOCK_ID, STOCK_PRICE, STOCK_COUNT))
         .Times(1);
 
-    string stockCode = "AAA";
-    int price = 10;
-    int count = 100;
-    mockDriver.buy(stockCode, price, count);
+    mockDriver.buy(STOCK_ID, STOCK_PRICE, STOCK_COUNT);
 }
 
 TEST_F(TradingSystemFixture, Sell)
 {
-    EXPECT_CALL(mockDriver, sell("BBB", 100, 1000))
+    EXPECT_CALL(mockDriver, sell(STOCK_ID, STOCK_PRICE, STOCK_COUNT))
         .Times(1);
 
-    string stockCode = "BBB";
-    int price = 100;
-    int count = 1000;
-    mockDriver.sell(stockCode, price, count);
+    mockDriver.sell(STOCK_ID, STOCK_PRICE, STOCK_COUNT);
 }
 
 TEST_F(TradingSystemFixture, CheckCurrentPrice)
 {
-	string stockCode = "CCC";
-    EXPECT_CALL(mockDriver, getPrice(stockCode, 1000))
+    EXPECT_CALL(mockDriver, getPrice(STOCK_ID, DELAY1000))
         .Times(1)
         .WillOnce(Return(999));
 
-    int price = mockDriver.getPrice(stockCode, 1000);
+    int price = mockDriver.getPrice(STOCK_ID, DELAY1000);
 
     EXPECT_EQ(999, price);
 }
@@ -84,16 +83,13 @@ TEST_F(TradingSystemFixture, BuyNiceTimingWithFail)
 {
     tradingSystem.selectStockBroker(&mockDriver);
 
-    EXPECT_CALL(mockDriver, getPrice("DDD", _))
+    EXPECT_CALL(mockDriver, getPrice(STOCK_ID, _))
         .Times(AtLeast(2))
-        .WillOnce(Return(1000))
-        .WillOnce(Return(1000))
-        .WillOnce(Return(1000));
+        .WillOnce(Return(DELAY1000))
+        .WillOnce(Return(DELAY1000))
+        .WillOnce(Return(DELAY1000));
 
-    string stockCode = "DDD";
-    int maxPrice = 9999;
-
-    bool isSuccess = tradingSystem.buyNiceTiming(stockCode, maxPrice);
+    bool isSuccess = tradingSystem.buyNiceTiming(STOCK_ID, STOCK_MAX_PRICE);
     EXPECT_FALSE(isSuccess);
 }
 
@@ -101,13 +97,13 @@ TEST_F(TradingSystemFixture, BuyNiceTimingFailWithNotEnoughPrice)
 {
     tradingSystem.selectStockBroker(&mockDriver);
 
-    EXPECT_CALL(mockDriver, getPrice("DDD", _))
+    EXPECT_CALL(mockDriver, getPrice(STOCK_ID, _))
         .Times(AtLeast(2))
-        .WillOnce(Return(1000))
-        .WillOnce(Return(1000))
-        .WillOnce(Return(1000));
+        .WillOnce(Return(DELAY1000))
+        .WillOnce(Return(DELAY1000))
+        .WillOnce(Return(DELAY1000));
 
-    string stockCode = "DDD";
+    string stockCode = STOCK_ID;
     int maxPrice = 100;
 
     bool isSuccess = tradingSystem.buyNiceTiming(stockCode, maxPrice);
@@ -118,19 +114,16 @@ TEST_F(TradingSystemFixture, BuyNiceTimingWithSuccess)
 {
     tradingSystem.selectStockBroker(&mockDriver);
 
-    EXPECT_CALL(mockDriver, getPrice("EEE", _))
+    EXPECT_CALL(mockDriver, getPrice(STOCK_ID, _))
         .Times(3)
-        .WillOnce(Return(1000))
-        .WillOnce(Return(1100))
-        .WillOnce(Return(1200));
+        .WillOnce(Return(DELAY1000))
+        .WillOnce(Return(DELAY1000+100))
+        .WillOnce(Return(DELAY1000+200));
 
-    EXPECT_CALL(mockDriver, buy("EEE", _, _))
+    EXPECT_CALL(mockDriver, buy(STOCK_ID, _, _))
 		.Times(AtLeast(1));
 
-    string stockCode = "EEE";
-    int maxPrice = 99999;
-
-    bool isSuccess = tradingSystem.buyNiceTiming(stockCode, maxPrice);
+    bool isSuccess = tradingSystem.buyNiceTiming(STOCK_ID, STOCK_MAX_PRICE);
     EXPECT_TRUE(isSuccess);
 }
 
@@ -138,15 +131,14 @@ TEST_F(TradingSystemFixture, SellNiceTimingWithFail)
 {
     tradingSystem.selectStockBroker(&mockDriver);
 
-    EXPECT_CALL(mockDriver, getPrice("FFF", _))
+    EXPECT_CALL(mockDriver, getPrice(STOCK_ID, _))
         .Times(AtLeast(2))
-        .WillOnce(Return(1000))
-        .WillRepeatedly(Return(1100));
+        .WillOnce(Return(DELAY1000))
+        .WillRepeatedly(Return(DELAY1000+100));
 
-    string stockCode = "FFF";
-    int count = 100;
+     int count = 100;
 
-    bool isSuccess = tradingSystem.sellNiceTiming(stockCode, count);
+    bool isSuccess = tradingSystem.sellNiceTiming(STOCK_ID, count);
     EXPECT_FALSE(isSuccess);
 }
 
@@ -154,44 +146,39 @@ TEST_F(TradingSystemFixture, SellNiceTimingWithSuccess)
 {
     tradingSystem.selectStockBroker(&mockDriver);
 
-    EXPECT_CALL(mockDriver, getPrice("GGG", _))
+    EXPECT_CALL(mockDriver, getPrice(STOCK_ID, _))
         .Times(3)
-        .WillOnce(Return(1000))
-        .WillOnce(Return(900))
-        .WillOnce(Return(800));
+        .WillOnce(Return(DELAY1000))
+        .WillOnce(Return(DELAY1000-100))
+        .WillOnce(Return(DELAY1000-200));
 
-    string stockCode = "GGG";
     int count = 100;
 
-    bool isSuccess = tradingSystem.sellNiceTiming(stockCode, count);
+    bool isSuccess = tradingSystem.sellNiceTiming(STOCK_ID, count);
     EXPECT_TRUE(isSuccess);
 }
 
 TEST_F(TradingSystemFixture, BuyNiceTimingExceptionWithoutSelectBroker)
 {
-    EXPECT_CALL(mockDriver, getPrice("XXX", _))
+    EXPECT_CALL(mockDriver, getPrice(STOCK_ID, _))
         .Times(3)
-        .WillOnce(Return(1000))
-        .WillOnce(Return(900))
-        .WillOnce(Return(800));
+        .WillOnce(Return(DELAY1000))
+        .WillOnce(Return(DELAY1000-100))
+        .WillOnce(Return(DELAY1000-200));
 
-    string stockCode = "XXX";
-    int maxPrice = 99999;
-
-    EXPECT_THROW(tradingSystem.buyNiceTiming(stockCode, maxPrice), std::exception);
+    EXPECT_THROW(tradingSystem.buyNiceTiming(STOCK_ID, STOCK_MAX_PRICE), std::exception);
 }
 
 TEST_F(TradingSystemFixture, SellNiceTimingExceptionWithoutSelectBroker)
 {
-    EXPECT_CALL(mockDriver, getPrice("XXX", _))
+    EXPECT_CALL(mockDriver, getPrice(STOCK_ID, _))
         .Times(3)
-        .WillOnce(Return(1000))
-        .WillOnce(Return(900))
-        .WillOnce(Return(800));
+        .WillOnce(Return(DELAY1000))
+        .WillOnce(Return(DELAY1000 - 100))
+        .WillOnce(Return(DELAY1000 - 200));
 
-    string stockCode = "XXX";
     int count = 100;
-    EXPECT_THROW(tradingSystem.sellNiceTiming(stockCode, count), std::exception);
+    EXPECT_THROW(tradingSystem.sellNiceTiming(STOCK_ID, count), std::exception);
 }
 
 int main() {
