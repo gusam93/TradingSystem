@@ -8,6 +8,7 @@ using std::string;
 
 
 class StockBrockerDriver {
+public:
 	virtual void login(string id, string password) = 0;
 	virtual void sell(string stockCode, int price, int count) = 0;
 	virtual void buy(string stockCode, int price, int count) = 0;
@@ -17,38 +18,38 @@ class StockBrockerDriver {
 class KiwerDriver : public StockBrockerDriver {
 public:
 	void login(string id, string password) override {
-		return kiwerapi->login(id, password);
+		return api.login(id, password);
 	}
 	void sell(string stockCode, int price, int count) {
-		return kiwerapi->sell(stockCode, count, price);
+		return api.sell(stockCode, count, price);
 	}
 	void buy(string stockCode, int price, int count) override {
-		kiwerapi->buy(stockCode, count, price);
+		api.buy(stockCode, count, price);
     }
 	int getPrice(string stockCode, int msDelay) {
 		Sleep(msDelay);
-		return kiwerapi->currentPrice(stockCode);
+		return api.currentPrice(stockCode);
 	}
 private:
-	KiwerAPI* kiwerapi;
+	KiwerAPI api;
 };
 
 class NemoDriver : public StockBrockerDriver {
 public:
 	void login(string id, string password) override {
-		return nemoapi->certification(id, password);
+		return api.certification(id, password);
 	}
 	void sell(string stockCode, int price, int count) {
-		return nemoapi->sellingStock(stockCode, price, count);
+		return api.sellingStock(stockCode, price, count);
 	}
 	void buy(string stockCode, int price, int count) override {
-		nemoapi->purchasingStock(stockCode, price, count);
+		api.purchasingStock(stockCode, price, count);
     }
 	int getPrice(string stockCode, int msDelay) {
-		return nemoapi->getMarketPrice(stockCode, msDelay);
+		return api.getMarketPrice(stockCode, msDelay);
 	}
 private:
-	NemoAPI* nemoapi;
+	NemoAPI api;
 };
 
 class AutoTradingSystem {
