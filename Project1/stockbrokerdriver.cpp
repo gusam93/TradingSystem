@@ -36,7 +36,8 @@ public:
 	StockBrockerDriver* getStockBroker() {
 		return brocker;
 	}
-	StockBrockerDriver* brocker;
+
 private:
+	StockBrockerDriver* brocker;
 	
 };

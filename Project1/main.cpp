@@ -69,7 +69,7 @@ TEST(TradingSystem, SelectStockBroker)
 
     auto selectedStcokBroker = tradingSystem.getStockBroker();
 
-    EXPECT_EQ(mockDriver, selectedStcokBroker);   
+   EXPECT_EQ(&mockDriver, selectedStcokBroker);   
 
 }
 
