@@ -125,7 +125,7 @@ TEST(TradingSystem, SellNiceTimingWithFail)
     bool isSuccess = tradingSystem.sellNiceTiming(stockCode, count);
     EXPECT_FALSE(isSuccess);
 }
-TEST(TradingSystem, SellNiceTimingWithFail)
+TEST(TradingSystem, SellNiceTimingWithSuccess)
 {
     NiceMock<MockDriver> mockDriver;
     AutoTradingSystem tradingSystem;
