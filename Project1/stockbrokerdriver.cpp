@@ -5,7 +5,7 @@
 
 using std::string;
 
-class StockBrockerDriver {
+class StockBrokerDriver {
 public:
 	virtual void login(string id, string password) = 0;
 	virtual void sell(string stockCode, int price, int count) = 0;
@@ -13,18 +13,18 @@ public:
 	virtual int getPrice(string stockCode, int msDelay) = 0;
 };
 
-class KiwerDriver : public StockBrockerDriver {
+class KiwerDriver : public StockBrokerDriver {
 public:
 	void login(string id, string password) override {
 		return api.login(id, password);
 	}
-	void sell(string stockCode, int price, int count) {
+	void sell(string stockCode, int price, int count) override {
 		return api.sell(stockCode, count, price);
 	}
 	void buy(string stockCode, int price, int count) override {
-		api.buy(stockCode, count, price);
+		return api.buy(stockCode, count, price);
     }
-	int getPrice(string stockCode, int msDelay) {
+	int getPrice(string stockCode, int msDelay) override {
 		Sleep(msDelay);
 		return api.currentPrice(stockCode);
 	}
@@ -32,18 +32,18 @@ private:
 	KiwerAPI api;
 };
 
-class NemoDriver : public StockBrockerDriver {
+class NemoDriver : public StockBrokerDriver {
 public:
 	void login(string id, string password) override {
 		return api.certification(id, password);
 	}
-	void sell(string stockCode, int price, int count) {
+	void sell(string stockCode, int price, int count) override {
 		return api.sellingStock(stockCode, price, count);
 	}
 	void buy(string stockCode, int price, int count) override {
-		api.purchasingStock(stockCode, price, count);
+		return api.purchasingStock(stockCode, price, count);
     }
-	int getPrice(string stockCode, int msDelay) {
+	int getPrice(string stockCode, int msDelay) override {
 		return api.getMarketPrice(stockCode, msDelay);
 	}
 private:
@@ -52,12 +52,12 @@ private:
 
 class AutoTradingSystem {
 public:
-	void selectStockBroker(StockBrockerDriver *driver) {
-		brocker = driver;
+	void selectStockBroker(StockBrokerDriver *driver) {
+		broker = driver;
 	}
 
-	StockBrockerDriver* getStockBroker() {
-		return brocker;
+	StockBrokerDriver* getStockBroker() {
+		return broker;
 	}
 
 	bool buyNiceTiming(string stockCode, int maxPrice) {
@@ -65,22 +65,22 @@ public:
 		if (finalPrice == BUY_PRICE_NOT_NICE) return false;
 		int buyStockCount = maxPrice / finalPrice;
 		if (buyStockCount <= 0) return false;
-		brocker->buy(stockCode, finalPrice, buyStockCount);
+		broker->buy(stockCode, finalPrice, buyStockCount);
 		return true;
 	}
 
 	bool sellNiceTiming(string stockCode, int count) {
 		int finalPrice = checkPriceFalling(stockCode);
 		if (finalPrice == SELL_PRICE_NOT_NICE) return false;
-		brocker->sell(stockCode, finalPrice, count);
+		broker->sell(stockCode, finalPrice, count);
 		return true;
 	}
 
 private:
 	int checkPriceFalling(string stockCode) {
-		int price = brocker->getPrice(stockCode, GET_PRICE_DELAY);
+		int price = broker->getPrice(stockCode, GET_PRICE_DELAY);
 		for (int getPriceCount = 0; getPriceCount < GET_PRICE_COUNT - 1; getPriceCount++) {
-			int newPrice = brocker->getPrice(stockCode, GET_PRICE_DELAY);
+			int newPrice = broker->getPrice(stockCode, GET_PRICE_DELAY);
 			if (price <= newPrice) return SELL_PRICE_NOT_NICE;
 			price = newPrice;
 		}
@@ -89,9 +89,9 @@ private:
 	}
 
 	int checkPriceIncreasing(string stockCode) {
-		int price = brocker->getPrice(stockCode, GET_PRICE_DELAY);
+		int price = broker->getPrice(stockCode, GET_PRICE_DELAY);
 		for (int getPriceCount = 0; getPriceCount < GET_PRICE_COUNT - 1; getPriceCount++) {
-			int newPrice = brocker->getPrice(stockCode, GET_PRICE_DELAY);
+			int newPrice = broker->getPrice(stockCode, GET_PRICE_DELAY);
 			if (price >= newPrice) return BUY_PRICE_NOT_NICE;
 			price = newPrice;
 		}
@@ -104,5 +104,5 @@ private:
 	const int BUY_PRICE_NOT_NICE = -1;
 	const int SELL_PRICE_NOT_NICE = -1;
 	
-	StockBrockerDriver* brocker;
+	StockBrokerDriver* broker;
 };

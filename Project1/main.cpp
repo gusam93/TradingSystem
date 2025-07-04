@@ -6,7 +6,7 @@
 using namespace testing;
 using std::string;
 
-class MockDriver : public StockBrockerDriver {
+class MockDriver : public StockBrokerDriver {
 public:
     MOCK_METHOD(void, login, (string id, string password), (override));
     MOCK_METHOD(void, sell, (string stockCode, int price, int count), (override));
