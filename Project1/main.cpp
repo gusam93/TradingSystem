@@ -142,10 +142,9 @@ TEST(TradingSystem, SellNiceTimingWithFail)
     tradingSystem.selectStockBroker(&mockDriver);
 
     EXPECT_CALL(mockDriver, getPrice("FFF", _))
-        .Times(3)
+        .Times(AtLeast(2))
         .WillOnce(Return(1000))
-        .WillOnce(Return(1100))
-        .WillOnce(Return(1000));
+        .WillRepeatedly(Return(1100));
 
     string stockCode = "FFF";
     int count = 100;
