@@ -8,27 +8,34 @@ using std::string;
 class StockBrockerDriver {
 public:
 	virtual void login(string id, string password) = 0;
-	virtual int getPrice(string& stockCode, int msDelay) = 0;
+	virtual void sell(string stockCode, int price, int count) = 0;
+	virtual int getPrice(string stockCode, int msDelay) = 0;
 };
 
-class kiwerDriver : public StockBrockerDriver {
+class KiwerDriver : public StockBrockerDriver {
 	void login(string id, string password) override {
-		return api->login(id, password);
+		return kiwerapi->login(id, password);
 	}
-	int getPrice(string& stockCode, int msDelay) override {
-		return api->currentPrice(stockCode);
+	void sell(string stockCode, int price, int count) {
+		return kiwerapi->sell(stockCode, count, price);
+	}
+	int getPrice(string stockCode, int msDelay) {
+		return kiwerapi->currentPrice(stockCode);
 	}
 private:
-	KiwerAPI* api;
+	KiwerAPI* kiwerapi;
 };
 
-class nemoDriver : public StockBrockerDriver {
+class NemoDriver : public StockBrockerDriver {
 	void login(string id, string password) override {
-		return api->certification(id, password);
+		return nemoapi->certification(id, password);
 	}
-	int getPrice(string& stockCode, int msDelay) override {
-		return api->getMarketPrice(stockCode, msDelay);
+	void sell(string stockCode, int price, int count) {
+		return nemoapi->sellingStock(stockCode, price, count);
+	}
+	int getPrice(string stockCode, int msDelay) {
+		return nemoapi->getMarketPrice(stockCode, msDelay);
 	}
 private:
-	NemoAPI* api;
+	NemoAPI* nemoapi;
 };
