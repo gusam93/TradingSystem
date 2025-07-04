@@ -14,10 +14,20 @@ public:
     MOCK_METHOD(int, getPrice, (string stockCode, int msDelay), (override));
 };
 
-
-TEST(TradingSystem, Login)
-{
+class TradingSystemFixture : public Test {
+public:
     NiceMock<MockDriver> mockDriver;
+    AutoTradingSystem tradingSystem;
+
+protected:
+    void SetUp() override {
+        //tradingSystem.selectStockBroker(&mockDriver);
+    }
+};
+
+
+TEST_F(TradingSystemFixture, Login)
+{
     EXPECT_CALL(mockDriver, login("ABC", "1234"))
         .Times(1);
 
@@ -26,9 +36,8 @@ TEST(TradingSystem, Login)
     mockDriver.login(id, password);
 }
 
-TEST(TradingSystem, Buy)
+TEST_F(TradingSystemFixture, Buy)
 {
-    NiceMock<MockDriver> mockDriver;
     EXPECT_CALL(mockDriver, buy("AAA", 10, 100))
         .Times(1);
 
@@ -38,9 +47,8 @@ TEST(TradingSystem, Buy)
     mockDriver.buy(stockCode, price, count);
 }
 
-TEST(TradingSystem, Sell)
+TEST_F(TradingSystemFixture, Sell)
 {
-    NiceMock<MockDriver> mockDriver;
     EXPECT_CALL(mockDriver, sell("BBB", 100, 1000))
         .Times(1);
 
@@ -50,9 +58,8 @@ TEST(TradingSystem, Sell)
     mockDriver.sell(stockCode, price, count);
 }
 
-TEST(TradingSystem, CheckCurrentPrice)
+TEST_F(TradingSystemFixture, CheckCurrentPrice)
 {
-    NiceMock<MockDriver> mockDriver;
 	string stockCode = "CCC";
     EXPECT_CALL(mockDriver, getPrice(stockCode, 1000))
         .Times(1)
@@ -63,11 +70,8 @@ TEST(TradingSystem, CheckCurrentPrice)
     EXPECT_EQ(999, price);
 }
 
-TEST(TradingSystem, SelectStockBroker)
+TEST_F(TradingSystemFixture, SelectStockBroker)
 {
-    NiceMock<MockDriver> mockDriver;
-    AutoTradingSystem tradingSystem;
-    
     tradingSystem.selectStockBroker(&mockDriver);
 
     auto selectedStcokBroker = tradingSystem.getStockBroker();
@@ -76,10 +80,8 @@ TEST(TradingSystem, SelectStockBroker)
 
 }
 
-TEST(TradingSystem, BuyNiceTimingWithFail)
+TEST_F(TradingSystemFixture, BuyNiceTimingWithFail)
 {
-    NiceMock<MockDriver> mockDriver;
-    AutoTradingSystem tradingSystem;
     tradingSystem.selectStockBroker(&mockDriver);
 
     EXPECT_CALL(mockDriver, getPrice("DDD", _))
@@ -95,10 +97,8 @@ TEST(TradingSystem, BuyNiceTimingWithFail)
     EXPECT_FALSE(isSuccess);
 }
 
-TEST(TradingSystem, BuyNiceTimingWithSuccess)
+TEST_F(TradingSystemFixture, BuyNiceTimingWithSuccess)
 {
-    NiceMock<MockDriver> mockDriver;
-    AutoTradingSystem tradingSystem;
     tradingSystem.selectStockBroker(&mockDriver);
 
     EXPECT_CALL(mockDriver, getPrice("EEE", _))
@@ -114,10 +114,8 @@ TEST(TradingSystem, BuyNiceTimingWithSuccess)
     EXPECT_TRUE(isSuccess);
 }
 
-TEST(TradingSystem, SellNiceTimingWithFail)
+TEST_F(TradingSystemFixture, SellNiceTimingWithFail)
 {
-    NiceMock<MockDriver> mockDriver;
-    AutoTradingSystem tradingSystem;
     tradingSystem.selectStockBroker(&mockDriver);
 
     EXPECT_CALL(mockDriver, getPrice("FFF", _))
@@ -132,10 +130,9 @@ TEST(TradingSystem, SellNiceTimingWithFail)
     bool isSuccess = tradingSystem.sellNiceTiming(stockCode, count);
     EXPECT_FALSE(isSuccess);
 }
-TEST(TradingSystem, SellNiceTimingWithSuccess)
+
+TEST_F(TradingSystemFixture, SellNiceTimingWithSuccess)
 {
-    NiceMock<MockDriver> mockDriver;
-    AutoTradingSystem tradingSystem;
     tradingSystem.selectStockBroker(&mockDriver);
 
     EXPECT_CALL(mockDriver, getPrice("GGG", _))
