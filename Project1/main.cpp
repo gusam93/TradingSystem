@@ -10,6 +10,7 @@ class MockDriver : public StockBrockerDriver {
 public:
     MOCK_METHOD(void, login, (string id, string password), (override));
     MOCK_METHOD(void, sell, (string stockCode, int price, int count), (override));
+    MOCK_METHOD(void, buy, (string stockCode, int price, int count), (override));
 };
 
 TEST(TradingSystem, Login)
@@ -26,7 +27,7 @@ TEST(TradingSystem, Login)
 TEST(TradingSystem, Buy)
 {
     NiceMock<MockDriver> mockDriver;
-    EXPECT_CALL(mockDriver, buy("AAA", 10,100))
+    EXPECT_CALL(mockDriver, buy("AAA", 10, 100))
         .Times(1);
 
     string stockCode = "AAA";
