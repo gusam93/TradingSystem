@@ -167,6 +167,33 @@ TEST_F(TradingSystemFixture, SellNiceTimingWithSuccess)
     EXPECT_TRUE(isSuccess);
 }
 
+TEST_F(TradingSystemFixture, BuyNiceTimingExceptionWithoutSelectBroker)
+{
+    EXPECT_CALL(mockDriver, getPrice("XXX", _))
+        .Times(3)
+        .WillOnce(Return(1000))
+        .WillOnce(Return(900))
+        .WillOnce(Return(800));
+
+    string stockCode = "XXX";
+    int maxPrice = 99999;
+
+    EXPECT_THROW(tradingSystem.buyNiceTiming(stockCode, maxPrice), std::exception);
+}
+
+TEST_F(TradingSystemFixture, SellNiceTimingExceptionWithoutSelectBroker)
+{
+    EXPECT_CALL(mockDriver, getPrice("XXX", _))
+        .Times(3)
+        .WillOnce(Return(1000))
+        .WillOnce(Return(900))
+        .WillOnce(Return(800));
+
+    string stockCode = "XXX";
+    int count = 100;
+    EXPECT_THROW(tradingSystem.sellNiceTiming(stockCode, count), std::exception);
+}
+
 int main() {
     ::testing::InitGoogleMock();
     return RUN_ALL_TESTS();
