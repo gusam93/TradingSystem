@@ -159,25 +159,11 @@ TEST_F(TradingSystemFixture, SellNiceTimingWithSuccess)
 
 TEST_F(TradingSystemFixture, BuyNiceTimingExceptionWithoutSelectBroker)
 {
-    EXPECT_CALL(mockDriver, getPrice(STOCK_ID, _))
-        .Times(3)
-        .WillOnce(Return(CURRENT_PRICE))
-        .WillOnce(Return(CURRENT_PRICE - FALLING))
-        .WillOnce(Return(CURRENT_PRICE - FALLING - FALLING));
-
-
     EXPECT_THROW(tradingSystem.buyNiceTiming(STOCK_ID, STOCK_MAX_PRICE), std::exception);
 }
 
 TEST_F(TradingSystemFixture, SellNiceTimingExceptionWithoutSelectBroker)
 {
-
-    EXPECT_CALL(mockDriver, getPrice(STOCK_ID, _))
-        .Times(3)
-        .WillOnce(Return(CURRENT_PRICE))
-        .WillOnce(Return(CURRENT_PRICE - FALLING))
-        .WillOnce(Return(CURRENT_PRICE - FALLING - FALLING));
-
     int count = 100;
     EXPECT_THROW(tradingSystem.sellNiceTiming(STOCK_ID, count), std::exception);
 }
