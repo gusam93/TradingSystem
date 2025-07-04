@@ -85,9 +85,9 @@ TEST_F(TradingSystemFixture, BuyNiceTimingWithFail)
 
     EXPECT_CALL(mockDriver, getPrice(STOCK_ID, _))
         .Times(AtLeast(2))
-        .WillOnce(Return(DELAY1000))
-        .WillOnce(Return(DELAY1000))
-        .WillOnce(Return(DELAY1000));
+        .WillOnce(Return(1000))
+        .WillOnce(Return(1000))
+        .WillOnce(Return(1000));
 
     bool isSuccess = tradingSystem.buyNiceTiming(STOCK_ID, STOCK_MAX_PRICE);
     EXPECT_FALSE(isSuccess);
@@ -99,9 +99,9 @@ TEST_F(TradingSystemFixture, BuyNiceTimingFailWithNotEnoughPrice)
 
     EXPECT_CALL(mockDriver, getPrice(STOCK_ID, _))
         .Times(AtLeast(2))
-        .WillOnce(Return(DELAY1000))
-        .WillOnce(Return(DELAY1000))
-        .WillOnce(Return(DELAY1000));
+        .WillOnce(Return(1000))
+        .WillOnce(Return(1000))
+        .WillOnce(Return(1000));
 
     int maxPrice = 100;
     bool isSuccess = tradingSystem.buyNiceTiming(STOCK_ID, maxPrice);
@@ -114,9 +114,9 @@ TEST_F(TradingSystemFixture, BuyNiceTimingWithSuccess)
 
     EXPECT_CALL(mockDriver, getPrice(STOCK_ID, _))
         .Times(3)
-        .WillOnce(Return(DELAY1000))
-        .WillOnce(Return(DELAY1000+100))
-        .WillOnce(Return(DELAY1000+200));
+        .WillOnce(Return(1000))
+        .WillOnce(Return(1100))
+        .WillOnce(Return(1200));
 
     EXPECT_CALL(mockDriver, buy(STOCK_ID, _, _))
 		.Times(AtLeast(1));
@@ -131,8 +131,8 @@ TEST_F(TradingSystemFixture, SellNiceTimingWithFail)
 
     EXPECT_CALL(mockDriver, getPrice(STOCK_ID, _))
         .Times(AtLeast(2))
-        .WillOnce(Return(DELAY1000))
-        .WillRepeatedly(Return(DELAY1000+100));
+        .WillOnce(Return(1000))
+        .WillRepeatedly(Return(1100));
 
      int count = 100;
 
@@ -146,9 +146,9 @@ TEST_F(TradingSystemFixture, SellNiceTimingWithSuccess)
 
     EXPECT_CALL(mockDriver, getPrice(STOCK_ID, _))
         .Times(3)
-        .WillOnce(Return(DELAY1000))
-        .WillOnce(Return(DELAY1000-100))
-        .WillOnce(Return(DELAY1000-200));
+        .WillOnce(Return(1000))
+        .WillOnce(Return(900))
+        .WillOnce(Return(800));
 
     int count = 100;
 
@@ -160,9 +160,9 @@ TEST_F(TradingSystemFixture, BuyNiceTimingExceptionWithoutSelectBroker)
 {
     EXPECT_CALL(mockDriver, getPrice(STOCK_ID, _))
         .Times(3)
-        .WillOnce(Return(DELAY1000))
-        .WillOnce(Return(DELAY1000-100))
-        .WillOnce(Return(DELAY1000-200));
+        .WillOnce(Return(1000))
+        .WillOnce(Return(900))
+        .WillOnce(Return(800));
 
     EXPECT_THROW(tradingSystem.buyNiceTiming(STOCK_ID, STOCK_MAX_PRICE), std::exception);
 }
@@ -171,9 +171,9 @@ TEST_F(TradingSystemFixture, SellNiceTimingExceptionWithoutSelectBroker)
 {
     EXPECT_CALL(mockDriver, getPrice(STOCK_ID, _))
         .Times(3)
-        .WillOnce(Return(DELAY1000))
-        .WillOnce(Return(DELAY1000 - 100))
-        .WillOnce(Return(DELAY1000 - 200));
+        .WillOnce(Return(1000))
+        .WillOnce(Return(900))
+        .WillOnce(Return(800));
 
     int count = 100;
     EXPECT_THROW(tradingSystem.sellNiceTiming(STOCK_ID, count), std::exception);
