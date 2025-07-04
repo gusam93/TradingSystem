@@ -164,11 +164,13 @@ TEST_F(TradingSystemFixture, BuyNiceTimingExceptionWithoutSelectBroker)
         .WillOnce(Return(DELAY1000-100))
         .WillOnce(Return(DELAY1000-200));
 
+
     EXPECT_THROW(tradingSystem.buyNiceTiming(STOCK_ID, STOCK_MAX_PRICE), std::exception);
 }
 
 TEST_F(TradingSystemFixture, SellNiceTimingExceptionWithoutSelectBroker)
 {
+
     EXPECT_CALL(mockDriver, getPrice(STOCK_ID, _))
         .Times(3)
         .WillOnce(Return(DELAY1000))
