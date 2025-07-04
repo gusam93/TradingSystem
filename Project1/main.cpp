@@ -14,6 +14,7 @@ public:
     MOCK_METHOD(int, getPrice, (string stockCode, int msDelay), (override));
 };
 
+
 TEST(TradingSystem, Login)
 {
     NiceMock<MockDriver> mockDriver;
@@ -66,10 +67,13 @@ TEST(TradingSystem, SelectStockBroker)
 {
     NiceMock<MockDriver> mockDriver;
     AutoTradingSystem tradingSystem;
+    
     tradingSystem.selectStockBroker(&mockDriver);
 
     auto selectedStcokBroker = tradingSystem.getStockBroker();
-    EXPECT_EQ(mockDriver, selectedStcokBroker);
+
+   EXPECT_EQ(&mockDriver, selectedStcokBroker);   
+
 }
 
 TEST(TradingSystem, BuyNiceTimingWithFail)

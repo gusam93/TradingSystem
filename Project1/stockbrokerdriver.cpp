@@ -5,8 +5,9 @@
 
 using std::string;
 
+
+
 class StockBrockerDriver {
-public:
 	virtual void login(string id, string password) = 0;
 	virtual void sell(string stockCode, int price, int count) = 0;
 	virtual void buy(string stockCode, int price, int count) = 0;
@@ -48,4 +49,19 @@ public:
 	}
 private:
 	NemoAPI* nemoapi;
+};
+
+class AutoTradingSystem {
+public:
+	void selectStockBroker(StockBrockerDriver *driver) {
+		brocker = driver;
+	}
+
+	StockBrockerDriver* getStockBroker() {
+		return brocker;
+	}
+
+private:
+	StockBrockerDriver* brocker;
+	
 };
