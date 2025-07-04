@@ -22,7 +22,7 @@ public:
 	void sell(string stockCode, int price, int count) {
 		return kiwerapi->sell(stockCode, count, price);
 	}
-	void buy(string stockCode, int price, int count) override {
+	void buy(string stockCode, int price, int count) override {	
 		kiwerapi->buy(stockCode, count, price);
     }
 	int getPrice(string stockCode, int msDelay) {
