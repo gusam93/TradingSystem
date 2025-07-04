@@ -170,10 +170,9 @@ TEST_F(TradingSystemFixture, SellNiceTimingWithSuccess)
 TEST_F(TradingSystemFixture, BuyNiceTimingExceptionWithoutSelectBroker)
 {
     EXPECT_CALL(mockDriver, getPrice("XXX", _))
-        .Times(3)
-        .WillOnce(Return(1000))
-        .WillOnce(Return(900))
-        .WillOnce(Return(800));
+        .Times(0);
+    EXPECT_CALL(mockDriver, buy("AAA", 10, 100))
+        .Times(0);
 
     string stockCode = "XXX";
     int maxPrice = 99999;
@@ -184,10 +183,9 @@ TEST_F(TradingSystemFixture, BuyNiceTimingExceptionWithoutSelectBroker)
 TEST_F(TradingSystemFixture, SellNiceTimingExceptionWithoutSelectBroker)
 {
     EXPECT_CALL(mockDriver, getPrice("XXX", _))
-        .Times(3)
-        .WillOnce(Return(1000))
-        .WillOnce(Return(900))
-        .WillOnce(Return(800));
+        .Times(0);
+    EXPECT_CALL(mockDriver, sell("AAA", 10, 100))
+        .Times(0);
 
     string stockCode = "XXX";
     int count = 100;

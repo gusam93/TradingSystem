@@ -60,49 +60,69 @@ public:
 		return broker;
 	}
 
-	bool buyNiceTiming(string stockCode, int maxPrice) {
-		int finalPrice = checkPriceIncreasing(stockCode);
-		if (finalPrice == BUY_PRICE_NOT_NICE) return false;
-		int buyStockCount = maxPrice / finalPrice;
-		if (buyStockCount <= 0) return false;
-		broker->buy(stockCode, finalPrice, buyStockCount);
+	bool buyNiceTiming(string stockCode, int maxCash) {
+		if (isBrockerNull()) throw std::exception("Stock broker not selected");
+		if (isNiceTimingToBuy(stockCode) == false) return false;
+		if (isInvalidPrice()) return false;
+
+		int buyStockCount = getStockCount(maxCash, currentPrice);
+		broker->buy(stockCode, currentPrice, buyStockCount);
 		return true;
 	}
 
 	bool sellNiceTiming(string stockCode, int count) {
-		int finalPrice = checkPriceFalling(stockCode);
-		if (finalPrice == SELL_PRICE_NOT_NICE) return false;
-		broker->sell(stockCode, finalPrice, count);
+		if (isBrockerNull()) throw std::exception("Stock broker not selected");
+		if (isNiceTimingToSell(stockCode) == false) return false;
+		if (isInvalidPrice()) return false;
+
+		broker->sell(stockCode, currentPrice, count);
 		return true;
 	}
 
 private:
-	int checkPriceFalling(string stockCode) {
-		int price = broker->getPrice(stockCode, GET_PRICE_DELAY);
+	bool isBrockerNull()
+	{
+		return broker == nullptr;
+	}
+
+	bool isInvalidPrice()
+	{
+		return currentPrice == 0;
+	}
+
+	int getStockCount(int& maxCash, int& currentPrice)
+	{
+		return maxCash / currentPrice;
+	}
+
+
+	int isNiceTimingToSell(string stockCode) {
+		int price = broker->getPrice(stockCode, 0);
 		for (int getPriceCount = 0; getPriceCount < GET_PRICE_COUNT - 1; getPriceCount++) {
 			int newPrice = broker->getPrice(stockCode, GET_PRICE_DELAY);
-			if (price <= newPrice) return SELL_PRICE_NOT_NICE;
+			if (price <= newPrice) return false;
 			price = newPrice;
 		}
-
+		currentPrice = price;
 		return price;
 	}
 
-	int checkPriceIncreasing(string stockCode) {
-		int price = broker->getPrice(stockCode, GET_PRICE_DELAY);
+	bool isNiceTimingToBuy(string stockCode) {
+		int price = broker->getPrice(stockCode, 0);
 		for (int getPriceCount = 0; getPriceCount < GET_PRICE_COUNT - 1; getPriceCount++) {
 			int newPrice = broker->getPrice(stockCode, GET_PRICE_DELAY);
-			if (price >= newPrice) return BUY_PRICE_NOT_NICE;
+			if (price >= newPrice) return false;
 			price = newPrice;
 		}
-		if (price <= 0) return BUY_PRICE_NOT_NICE;
-		return price;
+		if (price <= 0) return false;
+		currentPrice = price;
+		return true;
 	}
 
 	const int GET_PRICE_DELAY = 200;
 	const int GET_PRICE_COUNT = 3;
-	const int BUY_PRICE_NOT_NICE = -1;
-	const int SELL_PRICE_NOT_NICE = -1;
+
+	int currentPrice = 0;
 	
 	StockBrokerDriver* broker;
 };
