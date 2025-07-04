@@ -84,7 +84,7 @@ TEST(TradingSystem, BuyNiceTimingWithFail)
     string stockCode = "DDD";
     int maxPrice = 9999;
 
-    auto isSuccess = tradingSystem.BuyNiceTiming(stockCode, maxPrice);
+    bool isSuccess = tradingSystem.buyNiceTiming(stockCode, maxPrice);
     EXPECT_FALSE(isSuccess);
 }
 
@@ -103,7 +103,44 @@ TEST(TradingSystem, BuyNiceTimingWithSuccess)
     string stockCode = "EEE";
     int maxPrice = 99999;
 
-    auto isSuccess = tradingSystem.BuyNiceTiming(stockCode, maxPrice);
+    bool isSuccess = tradingSystem.buyNiceTiming(stockCode, maxPrice);
+    EXPECT_TRUE(isSuccess);
+}
+
+TEST(TradingSystem, SellNiceTimingWithFail)
+{
+    NiceMock<MockDriver> mockDriver;
+    AutoTradingSystem tradingSystem;
+    tradingSystem.selectStockBroker(&mockDriver);
+
+    EXPECT_CALL(mockDriver, getPrice("FFF"))
+        .Times(3)
+        .WillOnce(Return(1000));
+        .WillOnce(Return(1100));
+        .WillOnce(Return(1000));
+
+    string stockCode = "FFF";
+    int count = 100;
+
+    bool isSuccess = tradingSystem.sellNiceTiming(stockCode, count);
+    EXPECT_FALSE(isSuccess);
+}
+TEST(TradingSystem, SellNiceTimingWithFail)
+{
+    NiceMock<MockDriver> mockDriver;
+    AutoTradingSystem tradingSystem;
+    tradingSystem.selectStockBroker(&mockDriver);
+
+    EXPECT_CALL(mockDriver, getPrice("GGG"))
+        .Times(3)
+        .WillOnce(Return(1000));
+        .WillOnce(Return(900));
+        .WillOnce(Return(800));
+
+    string stockCode = "GGG";
+    int count = 100;
+
+    bool isSuccess = tradingSystem.sellNiceTiming(stockCode, count);
     EXPECT_TRUE(isSuccess);
 }
 
