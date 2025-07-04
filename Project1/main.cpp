@@ -24,11 +24,16 @@ public:
     const int STOCK_COUNT = 1000;
 
     const int STOCK_MAX_PRICE = 9999;
+    const int STOCK_NUM_SELLING_COUNT = 100;
     const int DELAY1000 = 1000;
 
     const int CURRENT_PRICE = 1000;
-    const int RISING = 100;
-    const int FALLING = 100;
+    const int RISING_PRICE = 1100;
+    const int DOUBLE_RISING_PRICE = 1200;
+    const int FALLING_PRICE = 900;
+    const int DOUBLE_FALLING_PRICE = 800;
+
+    const int MAX_CASH = 99999;
 
 protected:
     void SetUp() override {
@@ -39,10 +44,10 @@ protected:
 
 TEST_F(TradingSystemFixture, Login)
 {
-    EXPECT_CALL(mockDriver, login("ABC", "1234"))
+    EXPECT_CALL(mockDriver, login("USER_ID", "1234"))
         .Times(1);
 
-    string id = "ABC";
+    string id = "USER_ID";
     string password = "1234";   
     mockDriver.login(id, password);
 }
@@ -67,21 +72,16 @@ TEST_F(TradingSystemFixture, CheckCurrentPrice)
 {
     EXPECT_CALL(mockDriver, getPrice(STOCK_ID, DELAY1000))
         .Times(1)
-        .WillOnce(Return(999));
+        .WillOnce(Return(STOCK_PRICE));
 
-    int price = mockDriver.getPrice(STOCK_ID, DELAY1000);
-
-    EXPECT_EQ(999, price);
+    EXPECT_EQ(STOCK_PRICE, mockDriver.getPrice(STOCK_ID, DELAY1000));
 }
 
 TEST_F(TradingSystemFixture, SelectStockBroker)
 {
     tradingSystem.selectStockBroker(&mockDriver);
 
-    auto selectedStcokBroker = tradingSystem.getStockBroker();
-
-   EXPECT_EQ(&mockDriver, selectedStcokBroker);   
-
+   EXPECT_EQ(&mockDriver, tradingSystem.getStockBroker());
 }
 
 TEST_F(TradingSystemFixture, BuyNiceTimingWithFail)
@@ -92,8 +92,7 @@ TEST_F(TradingSystemFixture, BuyNiceTimingWithFail)
         .Times(AtLeast(2))
         .WillRepeatedly(Return(CURRENT_PRICE));
 
-    bool isSuccess = tradingSystem.buyNiceTiming(STOCK_ID, STOCK_MAX_PRICE);
-    EXPECT_FALSE(isSuccess);
+    EXPECT_FALSE(tradingSystem.buyNiceTiming(STOCK_ID, STOCK_MAX_PRICE));
 }
 
 TEST_F(TradingSystemFixture, BuyNiceTimingFailWithNotEnoughPrice)
@@ -104,9 +103,7 @@ TEST_F(TradingSystemFixture, BuyNiceTimingFailWithNotEnoughPrice)
         .Times(AtLeast(2))
         .WillRepeatedly(Return(CURRENT_PRICE));
 
-    int maxPrice = 100;
-    bool isSuccess = tradingSystem.buyNiceTiming(STOCK_ID, maxPrice);
-    EXPECT_FALSE(isSuccess);
+    EXPECT_FALSE(tradingSystem.buyNiceTiming(STOCK_ID, MAX_CASH));
 }
 
 TEST_F(TradingSystemFixture, BuyNiceTimingWithSuccess)
@@ -116,13 +113,13 @@ TEST_F(TradingSystemFixture, BuyNiceTimingWithSuccess)
     EXPECT_CALL(mockDriver, getPrice(STOCK_ID, _))
         .Times(3)
         .WillOnce(Return(CURRENT_PRICE))
-        .WillOnce(Return(CURRENT_PRICE + RISING))
-        .WillOnce(Return(CURRENT_PRICE + RISING + RISING));
+        .WillOnce(Return(RISING_PRICE))
+        .WillOnce(Return(DOUBLE_RISING_PRICE));
 
     EXPECT_CALL(mockDriver, buy(STOCK_ID, _, _))
 		.Times(AtLeast(1));
 
-    bool isSuccess = tradingSystem.buyNiceTiming(STOCK_ID, 99999);
+    bool isSuccess = tradingSystem.buyNiceTiming(STOCK_ID, MAX_CASH);
     EXPECT_TRUE(isSuccess);
 }
 
@@ -133,12 +130,9 @@ TEST_F(TradingSystemFixture, SellNiceTimingWithFail)
     EXPECT_CALL(mockDriver, getPrice(STOCK_ID, _))
         .Times(AtLeast(2))
         .WillOnce(Return(CURRENT_PRICE))
-        .WillRepeatedly(Return(CURRENT_PRICE+RISING));
+        .WillRepeatedly(Return(RISING_PRICE));
 
-    int count = 100;
-
-    bool isSuccess = tradingSystem.sellNiceTiming(STOCK_ID, count);
-    EXPECT_FALSE(isSuccess);
+    EXPECT_FALSE(tradingSystem.sellNiceTiming(STOCK_ID, STOCK_NUM_SELLING_COUNT));
 }
 
 TEST_F(TradingSystemFixture, SellNiceTimingWithSuccess)
@@ -148,13 +142,10 @@ TEST_F(TradingSystemFixture, SellNiceTimingWithSuccess)
     EXPECT_CALL(mockDriver, getPrice(STOCK_ID, _))
         .Times(3)
         .WillOnce(Return(CURRENT_PRICE))
-        .WillOnce(Return(CURRENT_PRICE - FALLING))
-        .WillOnce(Return(CURRENT_PRICE - FALLING - FALLING));
+        .WillOnce(Return(FALLING_PRICE))
+        .WillOnce(Return(DOUBLE_FALLING_PRICE));
 
-    int count = 100;
-
-    bool isSuccess = tradingSystem.sellNiceTiming(STOCK_ID, count);
-    EXPECT_TRUE(isSuccess);
+    EXPECT_TRUE(tradingSystem.sellNiceTiming(STOCK_ID, STOCK_NUM_SELLING_COUNT));
 }
 
 TEST_F(TradingSystemFixture, BuyNiceTimingExceptionWithoutSelectBroker)
