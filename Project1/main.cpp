@@ -7,8 +7,6 @@ using std::string;
 
 class MockDriver {
 public:
-    MOCK_METHOD(void, login, (std::string id, std::string password), ());
-    MOCK_METHOD(void, buy, (std::string stockCode, int price, int count), ());
     MOCK_METHOD(void, sell, (std::string stockCode, int price, int count), ());
 };
 
