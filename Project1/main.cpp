@@ -103,10 +103,8 @@ TEST_F(TradingSystemFixture, BuyNiceTimingFailWithNotEnoughPrice)
         .WillOnce(Return(DELAY1000))
         .WillOnce(Return(DELAY1000));
 
-    string stockCode = STOCK_ID;
     int maxPrice = 100;
-
-    bool isSuccess = tradingSystem.buyNiceTiming(stockCode, maxPrice);
+    bool isSuccess = tradingSystem.buyNiceTiming(STOCK_ID, maxPrice);
     EXPECT_FALSE(isSuccess);
 }
 
@@ -123,7 +121,7 @@ TEST_F(TradingSystemFixture, BuyNiceTimingWithSuccess)
     EXPECT_CALL(mockDriver, buy(STOCK_ID, _, _))
 		.Times(AtLeast(1));
 
-    bool isSuccess = tradingSystem.buyNiceTiming(STOCK_ID, STOCK_MAX_PRICE);
+    bool isSuccess = tradingSystem.buyNiceTiming(STOCK_ID, 999);
     EXPECT_TRUE(isSuccess);
 }
 
