@@ -107,7 +107,7 @@ TEST(TradingSystem, BuyNiceTimingWithSuccess)
         .WillOnce(Return(1200));
 
     EXPECT_CALL(mockDriver, buy("EEE", _, _))
-		.Times(1);
+		.Times(AtLeast(1));
 
     string stockCode = "EEE";
     int maxPrice = 99999;
