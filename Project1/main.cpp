@@ -9,7 +9,7 @@ using std::string;
 class MockDriver : public StockBrockerDriver {
 public:
     MOCK_METHOD(void, login, (string id, string password), (override));
-    MOCK_METHOD(void, sell, (std::string stockCode, int price, int count), ());
+    MOCK_METHOD(void, sell, (std::string stockCode, int price, int count), (override));
 };
 
 TEST(TradingSystem, Login)
