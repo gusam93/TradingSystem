@@ -69,6 +69,44 @@ TEST(TradingSystem, SelectStockBroker)
     EXPECT_EQ(mockDriver, selectedStcokBroker);
 }
 
+TEST(TradingSystem, BuyNiceTimingWithFail)
+{
+    NiceMock<MockDriver> mockDriver;
+    AutoTradingSystem tradingSystem;
+    tradingSystem.selectStockBroker(&mockDriver);
+
+    EXPECT_CALL(mockDriver, getPrice("DDD"))
+        .Times(3)
+        .WillOnce(Return(1000))
+        .WillOnce(Return(1000))
+        .WillOnce(Return(1000));
+
+    string stockCode = "DDD";
+    int maxPrice = 9999;
+
+    auto isSuccess = tradingSystem.BuyNiceTiming(stockCode, maxPrice);
+    EXPECT_FALSE(isSuccess);
+}
+
+TEST(TradingSystem, BuyNiceTimingWithSuccess)
+{
+    NiceMock<MockDriver> mockDriver;
+    AutoTradingSystem tradingSystem;
+    tradingSystem.selectStockBroker(&mockDriver);
+
+    EXPECT_CALL(mockDriver, getPrice("EEE"))
+        .Times(3)
+        .WillOnce(Return(1000));
+        .WillOnce(Return(1100));
+        .WillOnce(Return(1200));
+
+    string stockCode = "EEE";
+    int maxPrice = 99999;
+
+    auto isSuccess = tradingSystem.BuyNiceTiming(stockCode, maxPrice);
+    EXPECT_TRUE(isSuccess);
+}
+
 int main() {
     ::testing::InitGoogleMock();
     return RUN_ALL_TESTS();
