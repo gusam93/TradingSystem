@@ -95,9 +95,7 @@ private:
 			if (price >= newPrice) return BUY_PRICE_NOT_NICE;
 			price = newPrice;
 		}
-
 		if (price <= 0) return BUY_PRICE_NOT_NICE;
-
 		return price;
 	}
 
