@@ -11,6 +11,7 @@ public:
     MOCK_METHOD(void, login, (string id, string password), (override));
     MOCK_METHOD(void, sell, (string stockCode, int price, int count), (override));
     MOCK_METHOD(void, buy, (string stockCode, int price, int count), (override));
+    MOCK_METHOD(int, getPrice, (string stockCode, int msDelay), (override));
 };
 
 TEST(TradingSystem, Login)
@@ -51,12 +52,12 @@ TEST(TradingSystem, Sell)
 TEST(TradingSystem, CheckCurrentPrice)
 {
     NiceMock<MockDriver> mockDriver;
-    EXPECT_CALL(mockDriver, getPrice("CCC"))
+	string stockCode = "CCC";
+    EXPECT_CALL(mockDriver, getPrice(stockCode, 1000))
         .Times(1)
         .WillOnce(Return(999));
-    string stockCode = "CCC";
 
-    int price = mockDriver.getPrice(stockCode);
+    int price = mockDriver.getPrice(stockCode, 1000);
 
     EXPECT_EQ(999, price);
 }
@@ -77,7 +78,7 @@ TEST(TradingSystem, BuyNiceTimingWithFail)
     AutoTradingSystem tradingSystem;
     tradingSystem.selectStockBroker(&mockDriver);
 
-    EXPECT_CALL(mockDriver, getPrice("DDD"))
+    EXPECT_CALL(mockDriver, getPrice("DDD", _))
         .Times(3)
         .WillOnce(Return(1000))
         .WillOnce(Return(1000))
@@ -96,10 +97,10 @@ TEST(TradingSystem, BuyNiceTimingWithSuccess)
     AutoTradingSystem tradingSystem;
     tradingSystem.selectStockBroker(&mockDriver);
 
-    EXPECT_CALL(mockDriver, getPrice("EEE"))
+    EXPECT_CALL(mockDriver, getPrice("EEE", _))
         .Times(3)
-        .WillOnce(Return(1000));
-        .WillOnce(Return(1100));
+        .WillOnce(Return(1000))
+        .WillOnce(Return(1100))
         .WillOnce(Return(1200));
 
     string stockCode = "EEE";
@@ -115,10 +116,10 @@ TEST(TradingSystem, SellNiceTimingWithFail)
     AutoTradingSystem tradingSystem;
     tradingSystem.selectStockBroker(&mockDriver);
 
-    EXPECT_CALL(mockDriver, getPrice("FFF"))
+    EXPECT_CALL(mockDriver, getPrice("FFF", _))
         .Times(3)
-        .WillOnce(Return(1000));
-        .WillOnce(Return(1100));
+        .WillOnce(Return(1000))
+        .WillOnce(Return(1100))
         .WillOnce(Return(1000));
 
     string stockCode = "FFF";
@@ -133,10 +134,10 @@ TEST(TradingSystem, SellNiceTimingWithSuccess)
     AutoTradingSystem tradingSystem;
     tradingSystem.selectStockBroker(&mockDriver);
 
-    EXPECT_CALL(mockDriver, getPrice("GGG"))
+    EXPECT_CALL(mockDriver, getPrice("GGG", _))
         .Times(3)
-        .WillOnce(Return(1000));
-        .WillOnce(Return(900));
+        .WillOnce(Return(1000))
+        .WillOnce(Return(900))
         .WillOnce(Return(800));
 
     string stockCode = "GGG";
