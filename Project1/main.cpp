@@ -95,6 +95,25 @@ TEST(TradingSystem, BuyNiceTimingWithFail)
     EXPECT_FALSE(isSuccess);
 }
 
+TEST(TradingSystem, BuyNiceTimingFailWithNotEnoughPrice)
+{
+    NiceMock<MockDriver> mockDriver;
+    AutoTradingSystem tradingSystem;
+    tradingSystem.selectStockBroker(&mockDriver);
+
+    EXPECT_CALL(mockDriver, getPrice("DDD", _))
+        .Times(AtLeast(2))
+        .WillOnce(Return(1000))
+        .WillOnce(Return(1000))
+        .WillOnce(Return(1000));
+
+    string stockCode = "DDD";
+    int maxPrice = 100;
+
+    bool isSuccess = tradingSystem.buyNiceTiming(stockCode, maxPrice);
+    EXPECT_FALSE(isSuccess);
+}
+
 TEST(TradingSystem, BuyNiceTimingWithSuccess)
 {
     NiceMock<MockDriver> mockDriver;
