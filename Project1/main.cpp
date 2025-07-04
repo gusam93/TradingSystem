@@ -14,7 +14,7 @@ public:
     MOCK_METHOD(int, getPrice, (string stockCode, int msDelay), (override));
 };
 
-/*
+
 TEST(TradingSystem, Login)
 {
     NiceMock<MockDriver> mockDriver;
@@ -62,7 +62,7 @@ TEST(TradingSystem, CheckCurrentPrice)
 
     EXPECT_EQ(999, price);
 }
-*/
+
 TEST(TradingSystem, SelectStockBroker)
 {
     NiceMock<MockDriver> mockDriver;
