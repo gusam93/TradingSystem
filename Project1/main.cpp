@@ -5,6 +5,13 @@
 using namespace testing;
 using std::string;
 
+class MockDriver {
+public:
+    MOCK_METHOD(void, login, (std::string id, std::string password), ());
+    MOCK_METHOD(void, buy, (std::string stockCode, int price, int count), ());
+    MOCK_METHOD(void, sell, (std::string stockCode, int price, int count), ());
+};
+
 TEST(TradingSystem, Login)
 {
     NiceMock<MockDriver> mockDriver;
@@ -23,20 +30,20 @@ TEST(TradingSystem, Buy)
         .Times(1);
 
     string stockCode = "AAA";
-    int count = 10;
-    int price = 100;
+    int price = 10;
+    int count = 100;
     mockDriver.buy(stockCode, price, count);
 }
 
 TEST(TradingSystem, Sell)
 {
     NiceMock<MockDriver> mockDriver;
-    EXPECT_CALL(mockDriver, buy("BBB", 100, 1000))
+    EXPECT_CALL(mockDriver, sell("BBB", 100, 1000))
         .Times(1);
 
     string stockCode = "BBB";
-    int count = 100;
-    int price = 1000;
+    int price = 100;
+    int count = 1000;
     mockDriver.sell(stockCode, price, count);
 }
 
