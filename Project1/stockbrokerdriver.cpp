@@ -10,7 +10,7 @@ public:
 	virtual void login(string id, string password) = 0;
 };
 
-class kiwerDriver : public StockBrockerDriver {
+class KiwerDriver : public StockBrockerDriver {
 	void login(string id, string password) override {
 		return kiwerapi->login(id, password);
 	}
@@ -18,7 +18,7 @@ private:
 	KiwerAPI* kiwerapi;
 };
 
-class nemoDriver : public StockBrockerDriver {
+class NemoDriver : public StockBrockerDriver {
 	void login(string id, string password) override {
 		return nemoapi->certification(id, password);
 	}
