@@ -131,6 +131,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'"> %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="nemo.cpp" />
+    <ClCompile Include="stockbrokerdriver.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -1,12 +1,14 @@
 #include "gmock/gmock.h"
 #include "kiwer.cpp"
 #include "nemo.cpp"
+#include "stockbrokerdriver.cpp"
 
 using namespace testing;
 using std::string;
 
-class MockDriver {
+class MockDriver : public StockBrockerDriver {
 public:
+    MOCK_METHOD(void, login, (string id, string password), (override));
     MOCK_METHOD(void, sell, (std::string stockCode, int price, int count), ());
 };
 
@@ -56,6 +58,16 @@ TEST(TradingSystem, CheckCurrentPrice)
     int price = mockDriver.getPrice(stockCode);
 
     EXPECT_EQ(999, price);
+}
+
+TEST(TradingSystem, SelectStockBroker)
+{
+    NiceMock<MockDriver> mockDriver;
+    AutoTradingSystem tradingSystem;
+    tradingSystem.selectStockBroker(&mockDriver);
+
+    auto selectedStcokBroker = tradingSystem.getStockBroker();
+    EXPECT_EQ(mockDriver, selectedStcokBroker);
 }
 
 int main() {
