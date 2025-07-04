@@ -3,10 +3,17 @@
 #include "nemo.cpp"
 
 using namespace testing;
+using std::string;
 
-TEST(TradingSystem, Sample)
+TEST(TradingSystem, Login)
 {
-    EXPECT_EQ(1, 1);
+    NiceMock<MockDriver> mockDriver;
+    EXPECT_CALL(mockDriver, login("ABC", "1234"))
+        .Times(1);
+
+    string id = "ABC";
+    string password = "1234";   
+    mockDriver.login(id, password);
 }
 
 int main() {
