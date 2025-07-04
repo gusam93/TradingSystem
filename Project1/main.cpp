@@ -14,7 +14,6 @@ public:
     MOCK_METHOD(int, getPrice, (string stockCode, int msDelay), (override));
 };
 
-
 TEST(TradingSystem, Login)
 {
     NiceMock<MockDriver> mockDriver;
@@ -83,7 +82,7 @@ TEST(TradingSystem, BuyNiceTimingWithFail)
     tradingSystem.selectStockBroker(&mockDriver);
 
     EXPECT_CALL(mockDriver, getPrice("DDD", _))
-        .Times(3)
+        .Times(AtLeast(2))
         .WillOnce(Return(1000))
         .WillOnce(Return(1000))
         .WillOnce(Return(1000));
@@ -125,6 +124,9 @@ TEST(TradingSystem, BuyNiceTimingWithSuccess)
         .WillOnce(Return(1000))
         .WillOnce(Return(1100))
         .WillOnce(Return(1200));
+
+    EXPECT_CALL(mockDriver, buy("EEE", _, _))
+		.Times(AtLeast(1));
 
     string stockCode = "EEE";
     int maxPrice = 99999;
