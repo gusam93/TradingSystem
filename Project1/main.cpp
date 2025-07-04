@@ -40,6 +40,19 @@ TEST(TradingSystem, Sell)
     mockDriver.sell(stockCode, price, count);
 }
 
+TEST(TradingSystem, CheckCurrentPrice)
+{
+    NiceMock<MockDriver> mockDriver;
+    EXPECT_CALL(mockDriver, getPrice("CCC"))
+        .Times(1)
+        .WillOnce(Return(999));
+    string stockCode = "CCC";
+
+    int price = mockDriver.getPrice(stockCode);
+
+    EXPECT_EQ(999, price);
+}
+
 int main() {
     ::testing::InitGoogleMock();
     return RUN_ALL_TESTS();
