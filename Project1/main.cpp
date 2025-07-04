@@ -78,7 +78,7 @@ TEST(TradingSystem, BuyNiceTimingWithFail)
     AutoTradingSystem tradingSystem;
     tradingSystem.selectStockBroker(&mockDriver);
 
-    EXPECT_CALL(mockDriver, getPrice("DDD"))
+    EXPECT_CALL(mockDriver, getPrice("DDD", _))
         .Times(3)
         .WillOnce(Return(1000))
         .WillOnce(Return(1000))
@@ -97,10 +97,10 @@ TEST(TradingSystem, BuyNiceTimingWithSuccess)
     AutoTradingSystem tradingSystem;
     tradingSystem.selectStockBroker(&mockDriver);
 
-    EXPECT_CALL(mockDriver, getPrice("EEE"))
+    EXPECT_CALL(mockDriver, getPrice("EEE", _))
         .Times(3)
-        .WillOnce(Return(1000));
-        .WillOnce(Return(1100));
+        .WillOnce(Return(1000))
+        .WillOnce(Return(1100))
         .WillOnce(Return(1200));
 
     string stockCode = "EEE";
@@ -116,10 +116,10 @@ TEST(TradingSystem, SellNiceTimingWithFail)
     AutoTradingSystem tradingSystem;
     tradingSystem.selectStockBroker(&mockDriver);
 
-    EXPECT_CALL(mockDriver, getPrice("FFF"))
+    EXPECT_CALL(mockDriver, getPrice("FFF", _))
         .Times(3)
-        .WillOnce(Return(1000));
-        .WillOnce(Return(1100));
+        .WillOnce(Return(1000))
+        .WillOnce(Return(1100))
         .WillOnce(Return(1000));
 
     string stockCode = "FFF";
@@ -134,10 +134,10 @@ TEST(TradingSystem, SellNiceTimingWithSuccess)
     AutoTradingSystem tradingSystem;
     tradingSystem.selectStockBroker(&mockDriver);
 
-    EXPECT_CALL(mockDriver, getPrice("GGG"))
+    EXPECT_CALL(mockDriver, getPrice("GGG", _))
         .Times(3)
-        .WillOnce(Return(1000));
-        .WillOnce(Return(900));
+        .WillOnce(Return(1000))
+        .WillOnce(Return(900))
         .WillOnce(Return(800));
 
     string stockCode = "GGG";
