@@ -61,26 +61,12 @@ public:
 	}
 
 	bool buyNiceTiming(string stockCode, int maxPrice) {
-		int previousPrice = 0;
-		int currentStockPrice = 0;
-
-		for (int getPriceCount = 0; getPriceCount < GET_PRICE_COUNT; getPriceCount++) {
-			currentStockPrice = brocker->getPrice(stockCode, GET_PRICE_DELAY);
-			if (previousPrice >= currentStockPrice) {
-				return false;
-			}
-			previousPrice = currentStockPrice;
-		}
-
-		int buyStockCount = maxPrice / currentStockPrice;
-		if (buyStockCount > 0) {
-			brocker->buy(stockCode, currentStockPrice, buyStockCount);
-			return true;
-		}
-		else
-		{
-			return false;
-		}
+		int finalPrice = checkPriceIncreasing(stockCode);
+		if (finalPrice == BUY_PRICE_NOT_NICE) return false;
+		int buyStockCount = maxPrice / finalPrice;
+		if (buyStockCount <= 0) return false;
+		brocker->buy(stockCode, finalPrice, buyStockCount);
+		return true;
 	}
 
 	bool sellNiceTiming(string stockCode, int count) {
@@ -102,8 +88,20 @@ private:
 		return price;
 	}
 
+	int checkPriceIncreasing(string stockCode) {
+		int price = brocker->getPrice(stockCode, GET_PRICE_DELAY);
+		for (int getPriceCount = 0; getPriceCount < GET_PRICE_COUNT - 1; getPriceCount++) {
+			int newPrice = brocker->getPrice(stockCode, GET_PRICE_DELAY);
+			if (price >= newPrice) return BUY_PRICE_NOT_NICE;
+			price = newPrice;
+		}
+		if (price <= 0) return BUY_PRICE_NOT_NICE;
+		return price;
+	}
+
 	const int GET_PRICE_DELAY = 200;
 	const int GET_PRICE_COUNT = 3;
+	const int BUY_PRICE_NOT_NICE = -1;
 	const int SELL_PRICE_NOT_NICE = -1;
 	
 	StockBrockerDriver* brocker;
