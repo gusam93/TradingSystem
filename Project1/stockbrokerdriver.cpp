@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <stdexcept>
 #include "kiwer.cpp"
 #include "nemo.cpp"
 
