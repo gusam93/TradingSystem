@@ -121,7 +121,7 @@ TEST_F(TradingSystemFixture, BuyNiceTimingWithSuccess)
     EXPECT_CALL(mockDriver, buy(STOCK_ID, _, _))
 		.Times(AtLeast(1));
 
-    bool isSuccess = tradingSystem.buyNiceTiming(STOCK_ID, 999);
+    bool isSuccess = tradingSystem.buyNiceTiming(STOCK_ID, 99999);
     EXPECT_TRUE(isSuccess);
 }
 
